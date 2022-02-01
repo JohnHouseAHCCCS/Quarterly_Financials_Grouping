@@ -9,7 +9,8 @@ import pathlib as pl
 from parse import parse
 import json
 
-logging.basicConfig(filename='log.log', filemode='w', level=logging.DEBUG)
+logger = logging.getLogger(__name__)
+logging.basicConfig(filename='log.log', filemode='w', level=logging.INFO)
 
 
 def detect_line_item(cell):
@@ -22,26 +23,26 @@ def detect_line_item(cell):
 
 def extract_quarter(cell):
     assert type(cell.value) is str
-    logging.debug(cell.value)
+    logging.info(cell.value)
     date = parse("{}{:ta}", cell.value)[1]
-    logging.debug(str(date))
+    logging.info(str(date))
     return date
 
 
 def extract_revenues_and_expenses(filename, columns, info_row, info_column, name_cell, quarter_cell, sheet_names,
                                   line_items=pd.read_csv('Line_Items.csv', index_col=0)):
     print(filename)
-    logging.debug(filename)
+    logging.info(filename)
     wb = op.load_workbook(filename, data_only=True, read_only=True, keep_links=False)
 
     data = []
     for gsa in sheet_names:
-        logging.debug(f'{filename=}\t{gsa=}')
+        logging.info(f'{filename=}\t{gsa=}')
         try:
             sheet = wb[gsa]
         except KeyError as e:
             print(e)
-            logging.error(f'{filename}\t{gsa} didn\'t exist')
+            logging.warning(f'{filename}\t{gsa} didn\'t exist')
             continue
         name = sheet[name_cell].value
         quarter = extract_quarter(sheet[quarter_cell])
@@ -77,7 +78,7 @@ def main():
     now = datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S')
     output_directory = pl.Path(f'Output/{now}')
     output_directory.mkdir()
-    logging.debug(f'{output_directory=}')
+    logging.info(f'{output_directory=}')
     total_df = pd.DataFrame(columns=params['columns'])
     names = set([x[1] for x in dfs])
     for name in names:
@@ -93,7 +94,9 @@ def main():
 
 if __name__ == '__main__':
     options = ['ACC']
-    program = input(f"Please choose a program. Your options are: {', '.join(options)}\n\t")
+    program = None
+    while program not in options:
+        program = input(f"Please choose a program. Your options are: {', '.join(options)}\n\t")
     assert program in options
     with pl.Path(f'Input/formats/{program}.json').open('r') as f:
         params = json.load(f)
