@@ -79,7 +79,7 @@ def main():
     dfs = [extract_revenues_and_expenses(filename, **params) for filename in filenames]
     now = datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S')
     output_directory = pl.Path(f'Output/{program}/{now}')
-    output_directory.mkdir()
+    output_directory.mkdir(parents=True)
     logging.info(f'{output_directory=}')
     total_df = pd.DataFrame(columns=params['columns'])
     names = set([x[1] for x in dfs])
