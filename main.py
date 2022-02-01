@@ -30,6 +30,7 @@ def extract_quarter(cell):
 
 
 def extract_revenues_and_expenses(filename, columns, info_row, info_column, name_cell, quarter_cell, sheet_names,
+                                  first_column,
                                   line_items=pd.read_csv('Line_Items.csv', index_col=0)):
     print(filename)
     logging.info(filename)
@@ -51,24 +52,25 @@ def extract_revenues_and_expenses(filename, columns, info_row, info_column, name
                      ]
         data_columns = [cell.column for cell in sheet[info_row]
                         if cell.value
-                        and cell.column > 2
+                        and cell.column >= first_column
                         and 'total' not in str(cell.value).lower()
                         ]
-        for (i, j) in product(data_rows, data_columns):
-            if (cell := sheet.cell(i, j)).value or cell.value == 0:
-                data.append(
-                    {
-                        'Name': name,
-                        'Value': cell.value,
-                        'Quarter': quarter,
-                        'Sheet': sheet_name,
-                        'Column': sheet.cell(info_row, j).value,
-                        'Line Item': (li := sheet.cell(i, info_column[1]).value),
-                        'Line Category': line_items.loc[li]['Line Category'],
-                        'Line Name': line_items.loc[li]['Line Name'],
-                        'Revenue Expense Indicator': line_items.loc[li]['Revenue Expense Indicator']
-                    })
-    df = pd.DataFrame.from_records(data, columns=columns).sort_values(by=columns)
+        for j in data_columns:
+            for i in data_rows:
+                if (cell := sheet.cell(i, j)).value or cell.value == 0:
+                    data.append(
+                        {
+                            'Name': name,
+                            'Value': cell.value,
+                            'Quarter': quarter,
+                            'Sheet': sheet_name,
+                            'Column': sheet.cell(info_row, j).value,
+                            'Line Item': (li := sheet.cell(i, info_column[1]).value),
+                            'Line Category': line_items.loc[li]['Line Category'],
+                            'Line Name': line_items.loc[li]['Line Name'],
+                            'Revenue Expense Indicator': line_items.loc[li]['Revenue Expense Indicator']
+                        })
+    df = pd.DataFrame.from_records(data, columns=columns)
     return df, name
 
 
