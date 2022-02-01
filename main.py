@@ -27,14 +27,14 @@ def extract_quarter(cell):
     return date
 
 
-def extract_revenues_and_expenses(filename, columns):
+def extract_revenues_and_expenses(filename, columns, line_items=pd.read_csv('Line_Items.csv', index_col=0)):
+    print(filename)
     logging.debug(filename)
     info_row = 4
     info_column = 'A', 1
     name_cell = 'a2'
     quarter_cell = 'a3'
     sheet_names = ['North', 'South', 'Central']
-    line_items = pd.read_csv('Line_Items.csv', index_col=0)
     wb = op.load_workbook(filename, data_only=True)
 
     data = []
@@ -51,26 +51,20 @@ def extract_revenues_and_expenses(filename, columns):
                         and cell.column > 2
                         and 'total' not in str(cell.value).lower()
                         ]
-
-        try:
-            for (i, j) in product(data_rows, data_columns):
-                if (cell := sheet.cell(i, j)).value or cell.value == 0:
-                    data.append(
-                        {
-                            'Name': name,
-                            'Value': cell.value,
-                            'Quarter': quarter,
-                            'GSA': gsa,
-                            'Risk Group': sheet.cell(info_row, j).value,
-                            'Line Item': (li := sheet.cell(i, info_column[1]).value),
-                            'Line Category': line_items.loc[li]['Line Category'],
-                            'Line Name': line_items.loc[li]['Line Name'],
-                            'Revenue Expense Indicator': line_items.loc[li]['Revenue Expense Indicator']
-                        })
-        except KeyError as e:
-            logging.exception(f'{e} from {filename}')
-            raise e
-
+        for (i, j) in product(data_rows, data_columns):
+            if (cell := sheet.cell(i, j)).value or cell.value == 0:
+                data.append(
+                    {
+                        'Name': name,
+                        'Value': cell.value,
+                        'Quarter': quarter,
+                        'GSA': gsa,
+                        'Risk Group': sheet.cell(info_row, j).value,
+                        'Line Item': (li := sheet.cell(i, info_column[1]).value),
+                        'Line Category': line_items.loc[li]['Line Category'],
+                        'Line Name': line_items.loc[li]['Line Name'],
+                        'Revenue Expense Indicator': line_items.loc[li]['Revenue Expense Indicator']
+                    })
     df = pd.DataFrame.from_records(data, columns=columns).sort_values(by=columns)
     return df, name
 
@@ -105,8 +99,4 @@ def main():
 
 
 if __name__ == '__main__':
-    try:
-        main()
-    except Exception as e:
-        logging.exception(e)
-        raise e
+    main()
