@@ -1,0 +1,76 @@
+Line Item,Line Name,Line Category,Revenue Expense Indicator
+40105-01,Capitation,Revenues,Revenue
+40110-01,Reserved,Revenues,Revenue
+40115-01,Alternative Payment Model Initiatives Reconciliation/Settlement,Revenues,Revenue
+40120-01,Delivery Supplement,Revenues,Revenue
+40125-01,RESERVED,Revenues,Revenue
+40130-01,Prospective Tiered Reconciliation Settlement,Revenues,Revenue
+40140-01,RESERVED,Revenues,Revenue
+40145-01,Other Reconciliation Settlements ,Revenues,Revenue
+40160-01,Health Insurance Providers Fee Revenue,Revenues,Revenue
+40305-01,Investment Income,Revenues,Revenue
+40310-01,Other Income ,Revenues,Revenue
+50105-01,Hospital Inpatient,Hospitalization,Expense
+50110-01,Hospital Inpatient -Behavioral Health Services,Hospitalization,Expense
+50115-01,Reserved,Hospitalization,Expense
+50205-01,Primary Care Physician Services,Medical Compensation,Expense
+50210-01,Behavioral Health Physician Services,Medical Compensation,Expense
+50215-01,Referral Physician Services,Medical Compensation,Expense
+50220-01,PH FQHC/RHC Services,Medical Compensation,Expense
+50225-01,Other Professional Services,Medical Compensation,Expense
+50230-01,RESERVED,Medical Compensation,Expense
+50235-01,RESERVED,Medical Compensation,Expense
+50305-01,Emergency Facility Services,Other Medical Expenses,Expense
+50310-01,PH Pharmacy,Other Medical Expenses,Expense
+50315-01,"Laboratory, Radiology and Medical Imaging",Other Medical Expenses,Expense
+50320-01,Outpatient Facility,Other Medical Expenses,Expense
+50325-01,Durable Medical Equipment,Other Medical Expenses,Expense
+50330-01,Dental,Other Medical Expenses,Expense
+50335-01,Transportation,Other Medical Expenses,Expense
+50340-00,"Nursing Facility, Home Health Care",Other Medical Expenses,Expense
+50345-01,Therapies,Other Medical Expenses,Expense
+50350-01,Alternative Payment Model Performance Based Payments to Providers,Other Medical Expenses,Expense
+50355-01,Behavioral Health Day Program,Other Medical Expenses,Expense
+50355-05,Behavioral Health Case Management Services,Other Medical Expenses,Expense
+50355-06,Peer/Family Support,Other Medical Expenses,Expense
+50355-07,Support Services,Other Medical Expenses,Expense
+50355-10,Behavioral Health Crisis Intervention Services,Other Medical Expenses,Expense
+50355-11,Living Skills Training,Other Medical Expenses,Expense
+50355-12,Supported Employment,Other Medical Expenses,Expense
+50355-15,Behavioral Health Rehabilitation Services,Other Medical Expenses,Expense
+50355-20,Behavioral Health Residential Services,Other Medical Expenses,Expense
+50355-21,Counseling,Other Medical Expenses,Expense
+50355-22,"Assessment, Evaluation and Screening",Other Medical Expenses,Expense
+50355-23,Treatment Services,Other Medical Expenses,Expense
+50355-25,All Other Behavioral Health Services,Other Medical Expenses,Expense
+50360-01,Reserved,Other Medical Expenses,Expense
+50370-01,Other Medical Expenses,Other Medical Expenses,Expense
+70105-01,Reinsurance,Other Medical Expenses,Expense
+70205-02,Third Party Liability,Other Medical Expenses,Expense
+70305-01,Claim Overpayment Recoveries,Other Medical Expenses,Expense
+70310-05,PH Pharmacy Rebate,Other Medical Expenses,Expense
+70310-10,Pharmacy Performance Guarantees,Other Medical Expenses,Expense
+80105-01,Compensation,Administrative Expenses,Expense
+80205-01,Occupancy,Administrative Expenses,Expense
+80305-01,Depreciation,Administrative Expenses,Expense
+80405-01,Care Management/Care Coordination,Administrative Expenses,Expense
+80505-01,Professional and Outside Services,Administrative Expenses,Expense
+80605-01,Office Supplies and Equipment,Administrative Expenses,Expense
+80705-01,Travel,Administrative Expenses,Expense
+80805-01,Repair and Maintenance,Administrative Expenses,Expense
+80905-01,Bank Service Charge,Administrative Expenses,Expense
+81005-01,Insurance,Administrative Expenses,Expense
+81105-01,Marketing,Administrative Expenses,Expense
+81205-01,Interest Expense ,Administrative Expenses,Expense
+81305-01,Pharmacy Benefit Manager Expenses,Administrative Expenses,Expense
+81405-01,Fraud Reduction Expenses,Administrative Expenses,Expense
+81505-01,Third Party Activities,Administrative Expenses,Expense
+81605-01,Sub Capitation Block Administration,Administrative Expenses,Expense
+81705-01,Health Care Quality Improvement,Administrative Expenses,Expense
+82505-01,Interpretation/Translation Services,Administrative Expenses,Expense
+83005-01,Other Administrative Expenses,Administrative Expenses,Expense
+90105-01,Income taxes,Taxes and Fees,Expense
+90205-01,Premium taxes,Taxes and Fees,Expense
+90305-01,Health Insurance Providers Fee,Taxes and Fees,Expense
+990105-01,Community Reinvestment,Taxes and Fees,Expense
+990205-01,Non Covered Services,Taxes and Fees,Expense

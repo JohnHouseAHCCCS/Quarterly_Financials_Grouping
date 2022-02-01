@@ -1,0 +1,112 @@
+import openpyxl as op
+import re
+import sys
+import pandas as pd
+from itertools import product
+import datetime
+import logging
+import pathlib as pl
+from parse import parse
+
+logging.basicConfig(filename='log.log', filemode='w', level=logging.DEBUG)
+
+
+def detect_line_item(cell):
+    LINE_ITEM_REGEX = "[0-9]*-[0-9]{2}"
+    if not cell.value:
+        return False
+    else:
+        return re.match(LINE_ITEM_REGEX, str(cell.value))
+
+
+def extract_quarter(cell):
+    assert type(cell.value) is str
+    logging.debug(cell.value)
+    date = parse("{}{:ta}", cell.value)[1]
+    logging.debug(str(date))
+    return date
+
+
+def extract_revenues_and_expenses(filename, columns):
+    logging.debug(filename)
+    info_row = 4
+    info_column = 'A', 1
+    name_cell = 'a2'
+    quarter_cell = 'a3'
+    sheet_names = ['North', 'South', 'Central']
+    line_items = pd.read_csv('Line_Items.csv', index_col=0)
+    wb = op.load_workbook(filename, data_only=True)
+
+    data = []
+    for gsa in sheet_names:
+        logging.debug(f'{filename=}\t{gsa=}')
+        sheet = wb[gsa]
+        name = sheet[name_cell].value
+        quarter = extract_quarter(sheet[quarter_cell])
+        data_rows = [cell.row for cell in sheet[info_column[0]]
+                     if detect_line_item(cell)
+                     ]
+        data_columns = [cell.column for cell in sheet[info_row]
+                        if cell.value
+                        and cell.column > 2
+                        and 'total' not in str(cell.value).lower()
+                        ]
+
+        try:
+            for (i, j) in product(data_rows, data_columns):
+                if (cell := sheet.cell(i, j)).value or cell.value == 0:
+                    data.append(
+                        {
+                            'Name': name,
+                            'Value': cell.value,
+                            'Quarter': quarter,
+                            'GSA': gsa,
+                            'Risk Group': sheet.cell(info_row, j).value,
+                            'Line Item': (li := sheet.cell(i, info_column[1]).value),
+                            'Line Category': line_items.loc[li]['Line Category'],
+                            'Line Name': line_items.loc[li]['Line Name'],
+                            'Revenue Expense Indicator': line_items.loc[li]['Revenue Expense Indicator']
+                        })
+        except KeyError as e:
+            logging.exception(f'{e} from {filename}')
+            raise e
+
+    df = pd.DataFrame.from_records(data, columns=columns).sort_values(by=columns)
+    return df, name
+
+
+def main():
+    filenames = sys.argv[1:]
+    columns = ['Name',
+               'GSA',
+               'Quarter',
+               'Risk Group',
+               'Line Item',
+               'Line Category',
+               'Line Name',
+               'Revenue Expense Indicator',
+               'Value']
+    dfs = [extract_revenues_and_expenses(filename, columns) for filename in filenames]
+    now = datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S')
+    output_directory = pl.Path(f'Output/{now}')
+    output_directory.mkdir()
+    logging.debug(f'{output_directory=}')
+    total_df = pd.DataFrame(columns=columns)
+    names = set([x[1] for x in dfs])
+    for name in names:
+        matching_dfs = [x[0] for x in dfs if x[1] == name]
+        result = pd.DataFrame(columns=columns)
+        for matching_df in matching_dfs:
+            result = result.append(matching_df)
+            result.to_excel(output_directory / f'{name}.xlsx', index=False)
+            total_df = total_df.append(result)
+    total_df.to_excel(output_directory / 'Total.xlsx',
+                      index=False)
+
+
+if __name__ == '__main__':
+    try:
+        main()
+    except Exception as e:
+        logging.exception(e)
+        raise e
