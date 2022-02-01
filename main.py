@@ -33,16 +33,16 @@ def extract_revenues_and_expenses(filename, columns, info_row, info_column, name
                                   line_items=pd.read_csv('Line_Items.csv', index_col=0)):
     print(filename)
     logging.info(filename)
-    wb = op.load_workbook(filename, data_only=True, read_only=True, keep_links=False)
+    wb = op.load_workbook(filename, data_only=True)
 
     data = []
-    for gsa in sheet_names:
-        logging.info(f'{filename=}\t{gsa=}')
+    for sheet_name in sheet_names:
+        logging.info(f'{filename=}\t{sheet_name=}')
         try:
-            sheet = wb[gsa]
+            sheet = wb[sheet_name]
         except KeyError as e:
             print(e)
-            logging.warning(f'{filename}\t{gsa} didn\'t exist')
+            logging.warning(f'{filename}\t{sheet_name} didn\'t exist')
             continue
         name = sheet[name_cell].value
         quarter = extract_quarter(sheet[quarter_cell])
@@ -61,8 +61,8 @@ def extract_revenues_and_expenses(filename, columns, info_row, info_column, name
                         'Name': name,
                         'Value': cell.value,
                         'Quarter': quarter,
-                        'GSA': gsa,
-                        'Risk Group': sheet.cell(info_row, j).value,
+                        'Sheet': sheet_name,
+                        'Column': sheet.cell(info_row, j).value,
                         'Line Item': (li := sheet.cell(i, info_column[1]).value),
                         'Line Category': line_items.loc[li]['Line Category'],
                         'Line Name': line_items.loc[li]['Line Name'],
@@ -93,7 +93,7 @@ def main():
 
 
 if __name__ == '__main__':
-    options = ['ACC']
+    options = ['ACC', 'RBHA', 'ALTCS']
     program = None
     while program not in options:
         program = input(f"Please choose a program. Your options are: {', '.join(options)}\n\t")
