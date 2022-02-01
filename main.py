@@ -32,7 +32,7 @@ def extract_revenues_and_expenses(filename, columns, info_row, info_column, name
                                   line_items=pd.read_csv('Line_Items.csv', index_col=0)):
     print(filename)
     logging.debug(filename)
-    wb = op.load_workbook(filename, data_only=True)
+    wb = op.load_workbook(filename, data_only=True, read_only=True, keep_links=False)
 
     data = []
     for gsa in sheet_names:
@@ -94,6 +94,13 @@ def main():
 if __name__ == '__main__':
     options = ['ACC']
     program = input(f"Please choose a program. Your options are: {', '.join(options)}\n\t")
+    assert program in options
     with pl.Path(f'Input/formats/{program}.json').open('r') as f:
         params = json.load(f)
-    main()
+    try:
+        main()
+    except Exception as e:
+        logging.exception(e)
+        print(e)
+        input()
+        raise e
