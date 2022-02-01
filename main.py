@@ -37,7 +37,12 @@ def extract_revenues_and_expenses(filename, columns, info_row, info_column, name
     data = []
     for gsa in sheet_names:
         logging.debug(f'{filename=}\t{gsa=}')
-        sheet = wb[gsa]
+        try:
+            sheet = wb[gsa]
+        except KeyError as e:
+            print(e)
+            logging.error(f'{filename}\t{gsa} didn\'t exist')
+            continue
         name = sheet[name_cell].value
         quarter = extract_quarter(sheet[quarter_cell])
         data_rows = [cell.row for cell in sheet[info_column[0]]
