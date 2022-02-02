@@ -14,11 +14,11 @@ logging.basicConfig(filename='log.log', filemode='w', level=logging.INFO)
 
 
 def detect_line_item(cell):
-    LINE_ITEM_REGEX = "[0-9]*-[0-9]{2}"
+    line_item_regex = "[0-9]*-[0-9]{2}"
     if not cell.value:
         return False
     else:
-        return re.match(LINE_ITEM_REGEX, str(cell.value))
+        return re.match(line_item_regex, str(cell.value))
 
 
 def extract_quarter(cell):
