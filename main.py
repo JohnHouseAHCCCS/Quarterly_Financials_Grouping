@@ -2,7 +2,6 @@ import openpyxl as op
 import re
 import sys
 import pandas as pd
-from itertools import product
 import datetime
 import logging
 import pathlib as pl
@@ -30,7 +29,7 @@ def extract_quarter(cell):
 
 
 def extract_revenues_and_expenses(filename, columns, info_row, info_column, name_cell, quarter_cell, sheet_names,
-                                  first_column,
+                                  first_column, program,
                                   line_items=pd.read_csv('Line_Items.csv', index_col=0)):
     print(filename)
     logging.info(filename)
@@ -66,7 +65,7 @@ def extract_revenues_and_expenses(filename, columns, info_row, info_column, name
                             'Sheet': sheet_name,
                             'Column': sheet.cell(info_row, j).value,
                             'Line Item': (li := sheet.cell(i, info_column[1]).value),
-                            'Line Category': line_items.loc[li]['Line Category'],
+                            'Line Category': line_items.loc[li][f'Line Category {program}'],
                             'Line Name': line_items.loc[li]['Line Name'],
                             'Revenue Expense Indicator': line_items.loc[li]['Revenue Expense Indicator']
                         })
