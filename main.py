@@ -13,10 +13,12 @@ logging.basicConfig(filename='log.log', filemode='w', level=logging.INFO)
 
 
 def detect_line_item(cell):
-    line_item_regex = "[0-9]*-[0-9]{2}"
+    line_item_regex = "[0-9]*-[0-9]{2}.?"
     if not cell.value:
         return False
     else:
+        logging.debug(cell.value)
+        logging.debug(re.match(line_item_regex, str(cell.value)))
         return re.match(line_item_regex, str(cell.value))
 
 
@@ -26,6 +28,22 @@ def extract_quarter(cell):
     date = parse("{}{:ta}", cell.value)[1]
     logging.info(str(date))
     return date
+
+
+def rbha_sheet_reformat(sheet):
+    items = sheet['A']
+    item_rows = [item.row for item in items if detect_line_item(item)]
+    subitems = sheet['B']
+    for subitem in subitems:
+        if subitem.value:
+            if len(subitem.value) == 1:
+                item_row = max(row for row in item_rows if row < subitem.row)
+                logger.debug(f'Getting subitem from {subitem.row}. Item from {item_row}')
+                line_item = sheet[f'A{item_row}'].value
+                logger.debug(f'{line_item=}\t{subitem.value=}')
+                result = line_item + subitem.value
+                sheet[f'A{subitem.row}'] = result
+    return sheet
 
 
 def extract_revenues_and_expenses(filename, columns, info_row, info_column, name_cell, quarter_cell, sheet_names,
@@ -44,6 +62,8 @@ def extract_revenues_and_expenses(filename, columns, info_row, info_column, name
             print(e)
             logging.warning(f'{filename}\t{sheet_name} didn\'t exist')
             continue
+        if program == 'RBHA':
+            sheet = rbha_sheet_reformat(sheet)
         name = sheet[name_cell].value
         quarter = extract_quarter(sheet[quarter_cell])
         data_rows = [cell.row for cell in sheet[info_column[0]]
@@ -66,8 +86,9 @@ def extract_revenues_and_expenses(filename, columns, info_row, info_column, name
                             'Column': sheet.cell(info_row, j).value,
                             'Line Item': (li := sheet.cell(i, info_column[1]).value),
                             'Line Category': line_items.loc[li][f'Line Category {program}'],
-                            'Line Name': line_items.loc[li]['Line Name'],
-                            'Revenue Expense Indicator': line_items.loc[li]['Revenue Expense Indicator']
+                            'Line Name': (line_name := line_items.loc[li]['Line Name']),
+                            'Revenue Expense Indicator': line_items.loc[li]['Revenue Expense Indicator'],
+                            'Line Lookup': li + ' - ' + line_name,
                         })
     df = pd.DataFrame.from_records(data, columns=columns)
     return df, name

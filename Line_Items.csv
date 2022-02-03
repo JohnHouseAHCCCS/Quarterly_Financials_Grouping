@@ -17,25 +17,25 @@ Line Item,Line Name,Line Category ACC,Line Category RBHA,Line Category ALTCS,Rev
 40305-01,Investment Income,Revenues,Revenues,Revenues,Revenue
 40310-01,Other Income ,Revenues,Revenues,Revenues,Revenue
 40315-01,Patient Contributions (MSOC),Revenues,Revenues,Revenues,Revenue
-50105-01,Hospital Inpatient,Hospitalization,Hospitalization,Hospitalization,Expense
-50110-01,Hospital Inpatient -Behavioral Health Services,Hospitalization,Hospitalization,Hospitalization,Expense
-50115-01,Reserved,Hospitalization,Hospitalization,Hospitalization,Expense
-50205-01,Primary Care Physician Services,Medical Compensation,Medical Compensation,Medical Compensation,Expense
-50210-01,Behavioral Health Physician Services,Medical Compensation,Medical Compensation,Medical Compensation,Expense
-50215-01,Referral Physician Services,Medical Compensation,Medical Compensation,Medical Compensation,Expense
-50220-01,PH FQHC/RHC Services,Medical Compensation,Medical Compensation,Medical Compensation,Expense
-50225-01,Other Professional Services,Medical Compensation,Medical Compensation,Medical Compensation,Expense
-50230-01,RESERVED,Medical Compensation,Medical Compensation,Medical Compensation,Expense
-50235-01,RESERVED,Medical Compensation,Medical Compensation,Medical Compensation,Expense
-50305-01,Emergency Facility Services,Other Medical Expenses,Other Medical Expenses,Other Medical Expenses,Expense
-50310-01,PH Pharmacy,Other Medical Expenses,Other Medical Expenses,Other Medical Expenses,Expense
-50315-01,"Laboratory, Radiology and Medical Imaging",Other Medical Expenses,Other Medical Expenses,Other Medical Expenses,Expense
-50320-01,Outpatient Facility,Other Medical Expenses,Other Medical Expenses,Other Medical Expenses,Expense
-50320-05,Outpatient Behavioral Health Facility,Other Medical Expenses,Other Medical Expenses,Other Medical Expenses,Expense
-50325-01,Durable Medical Equipment,Other Medical Expenses,Other Medical Expenses,Other Medical Expenses,Expense
-50330-01,Dental,Other Medical Expenses,Other Medical Expenses,Other Medical Expenses,Expense
-50335-01,Transportation,Other Medical Expenses,Other Medical Expenses,Other Medical Expenses,Expense
-50340-00,"Nursing Facility, Home Health Care",Other Medical Expenses,Other Medical Expenses,Other Medical Expenses,Expense
+50105-01,Hospital Inpatient,Hospitalization,PH Hospitalization,Acute Care,Expense
+50110-01,Hospital Inpatient -Behavioral Health Services,Hospitalization,PH Hospitalization,Acute Care,Expense
+50115-01,Reserved,Hospitalization,PH Hospitalization,Acute Care,Expense
+50205-01,Primary Care Physician Services,Medical Compensation,PH Medical Compensation,Acute Care,Expense
+50210-01,Behavioral Health Physician Services,Medical Compensation,PH Medical Compensation,Acute Care,Expense
+50215-01,Referral Physician Services,Medical Compensation,PH Medical Compensation,Acute Care,Expense
+50220-01,PH FQHC/RHC Services,Medical Compensation,PH Medical Compensation,Acute Care,Expense
+50225-01,Other Professional Services,Medical Compensation,PH Medical Compensation,Acute Care,Expense
+50230-01,RESERVED,Medical Compensation,PH Medical Compensation,Acute Care,Expense
+50235-01,RESERVED,Medical Compensation,PH Medical Compensation,Acute Care,Expense
+50305-01,Emergency Facility Services,Other Medical Expenses,PH Other Medical Expenses,Acute Care,Expense
+50310-01,PH Pharmacy,Other Medical Expenses,PH Other Medical Expenses,Acute Care,Expense
+50315-01,"Laboratory, Radiology and Medical Imaging",Other Medical Expenses,PH Other Medical Expenses,Acute Care,Expense
+50320-01,Outpatient Facility,Other Medical Expenses,PH Other Medical Expenses,Acute Care,Expense
+50320-05,Outpatient Behavioral Health Facility,Other Medical Expenses,PH Other Medical Expenses,Acute Care,Expense
+50325-01,Durable Medical Equipment,Other Medical Expenses,PH Other Medical Expenses,Acute Care,Expense
+50330-01,Dental,Other Medical Expenses,PH Other Medical Expenses,Acute Care,Expense
+50335-01,Transportation,Other Medical Expenses,PH Other Medical Expenses,Acute Care,Expense
+50340-00,"Nursing Facility, Home Health Care",Other Medical Expenses,PH Other Medical Expenses,Institutional Care,Expense
 50340-01a,NF ICF & Bedholds,Institutional Care,Institutional Care,Institutional Care,Expense
 50340-01b,Level I,Institutional Care,Institutional Care,Institutional Care,Expense
 50340-01c,Level II,Institutional Care,Institutional Care,Institutional Care,Expense
@@ -57,10 +57,10 @@ Line Item,Line Name,Line Category ACC,Line Category RBHA,Line Category ALTCS,Rev
 50340-05m,Hospice,Home & Community Based Services (HCBS) Expenses,Home & Community Based Services (HCBS) Expenses,Home & Community Based Services (HCBS) Expenses,Expense
 50340-05n,Environmental Modifications,Home & Community Based Services (HCBS) Expenses,Home & Community Based Services (HCBS) Expenses,Home & Community Based Services (HCBS) Expenses,Expense
 50340-05p,Other HCBS Expense,Home & Community Based Services (HCBS) Expenses,Home & Community Based Services (HCBS) Expenses,Home & Community Based Services (HCBS) Expenses,Expense
-50345-01,Therapies,Other Medical Expenses,Other Medical Expenses,Other Medical Expenses,Expense
+50345-01,Therapies,Other Medical Expenses,PH Other Medical Expenses,Acute Care,Expense
 50349-01,TOTAL INSTITUTIONAL CARE,Institutional Care,Institutional Care,Institutional Care,Ignore
 50349-05,Total Home & Community Based Services (HCBS),Home & Community Based Services (HCBS) Expenses,Home & Community Based Services (HCBS) Expenses,Home & Community Based Services (HCBS) Expenses,Ignore
-50350-01,Alternative Payment Model Performance Based Payments to Providers,Other Medical Expenses,Other Medical Expenses,Other Medical Expenses,Expense
+50350-01,Alternative Payment Model Performance Based Payments to Providers,Other Medical Expenses,PH Other Medical Expenses,Other Medical Expenses,Expense
 50355-01,Behavioral Health Day Program,Other Medical Expenses,Other Medical Expenses,Other Medical Expenses,Expense
 50355-05,Behavioral Health Case Management Services,Other Medical Expenses,Other Medical Expenses,Other Medical Expenses,Expense
 50355-06,Peer/Family Support,Other Medical Expenses,Other Medical Expenses,Other Medical Expenses,Expense
@@ -76,53 +76,62 @@ Line Item,Line Name,Line Category ACC,Line Category RBHA,Line Category ALTCS,Rev
 50355-25,All Other Behavioral Health Services,Other Medical Expenses,Other Medical Expenses,Other Medical Expenses,Expense
 50360-01,Reserved,Other Medical Expenses,Other Medical Expenses,Other Medical Expenses,Expense
 50365-01,Case Management,PH Medical Expenses,PH Medical Expenses,PH Medical Expenses,Expense
-50370-01,Other Medical Expenses,Other Medical Expenses,Other Medical Expenses,Other Medical Expenses,Expense
-60105-01,Counseling,Treatment Services,Treatment Services,Treatment Services,Expense
-60105-05,"Assessment, Evaluation and Screening",Treatment Services,Treatment Services,Treatment Services,Expense
-60105-10,Other Professional,Treatment Services,Treatment Services,Treatment Services,Expense
-60205-01,Living Skills Training,Rehabilitation Services,Rehabilitation Services,Rehabilitation Services,Expense
-60205-05,Cognitive Rehabilitation,Rehabilitation Services,Rehabilitation Services,Rehabilitation Services,Expense
-60205-10,Health Promotion,Rehabilitation Services,Rehabilitation Services,Rehabilitation Services,Expense
-60205-15,Supported Employment Services,Rehabilitation Services,Rehabilitation Services,Rehabilitation Services,Expense
-60305-01,Medication Services,Medical Services,Medical Services,Medical Services,Expense
-60305-05,Medical Management,Medical Services,Medical Services,Medical Services,Expense
-60305-10,"Laboratory, Radiology and Medical Imaging",Medical Services,Medical Services,Medical Services,Expense
-60305-15,Electro-Convulsive Therapy,Medical Services,Medical Services,Medical Services,Expense
-60405-01,Case Management,Support Services,Support Services,Support Services,Expense
-60405-05,Personal Care Services,Support Services,Support Services,Support Services,Expense
-60405-10,Family Support,Support Services,Support Services,Support Services,Expense
-60405-15,Peer Support,Support Services,Support Services,Support Services,Expense
-60405-20,Therapeutic Foster Care,Support Services,Support Services,Support Services,Expense
-60405-21,Adult Behavioral Health Therapeutic Home,Support Services,Support Services,Support Services,Expense
-60405-25,Unskilled Respite Care,Support Services,Support Services,Support Services,Expense
-60405-30,Supported Housing*,Support Services,Support Services,Support Services,Expense
-60405-35,Reserved for Future Use,Support Services,Support Services,Support Services,Expense
-60405-40,Transportation,Support Services,Support Services,Support Services,Expense
-60505-01,Crisis Intervention - Mobile,Crisis Intervention Services,Crisis Intervention Services,Crisis Intervention Services,Expense
-60505-05,Crisis Intervention - Stabilization,Crisis Intervention Services,Crisis Intervention Services,Crisis Intervention Services,Expense
-60505-10,Crisis Intervention - Telephone,Crisis Intervention Services,Crisis Intervention Services,Crisis Intervention Services,Expense
-60605-01,Hospital,Inpatient Services,Inpatient Services,Inpatient Services,Expense
-60605-05,Sub acute Facility,Inpatient Services,Inpatient Services,Inpatient Services,Expense
-60605-10,Residential Treatment Center (RTC),Inpatient Services,Inpatient Services,Inpatient Services,Expense
-60605-15,"Inpatient Services, Professional",Inpatient Services,Inpatient Services,Inpatient Services,Expense
-60705-01,Behavioral Health Residential Facilities,Residential Services,Residential Services,Residential Services,Expense
-60705-05,Reserved for Future Use,Residential Services,Residential Services,Residential Services,Expense
-60705-10,Room and Board,Residential Services,Residential Services,Residential Services,Expense
-60805-01,Supervised Day Program,Behavioral Health Day Program,Behavioral Health Day Program,Behavioral Health Day Program,Expense
-60805-05,Therapeutic Day Program,Behavioral Health Day Program,Behavioral Health Day Program,Behavioral Health Day Program,Expense
-60805-10,Medical Day Program,Behavioral Health Day Program,Behavioral Health Day Program,Behavioral Health Day Program,Expense
-60905-01,Reserved for Future Use,HIV Services,HIV Services,HIV Services,Expense
-60905-05,HIV,HIV Services,HIV Services,HIV Services,Expense
+50370-01,Other Medical Expenses,Other Medical Expenses,PH Other Medical Expenses,Other Medical Expenses,Expense
+60105-01,Counseling,Treatment Services,BH Treatment Services,Treatment Services,Expense
+60105-01a,"Counseling, Individual",None,BH Treatment Services,None,Expense
+60105-01b,"Counseling, Family",None,BH Treatment Services,None,Expense
+60105-01c,"Counseling, Group",None,BH Treatment Services,None,Expense
+60105-05,"Assessment, Evaluation and Screening",Treatment Services,BH Treatment Services,Treatment Services,Expense
+60105-10,Other Professional,Treatment Services,BH Treatment Services,Treatment Services,Expense
+60205-01,Living Skills Training,Rehabilitation Services,BH Rehabilitation Services,Rehabilitation Services,Expense
+60205-05,Cognitive Rehabilitation,Rehabilitation Services,BH Rehabilitation Services,Rehabilitation Services,Expense
+60205-10,Health Promotion,Rehabilitation Services,BH Rehabilitation Services,Rehabilitation Services,Expense
+60205-15,Supported Employment Services,Rehabilitation Services,BH Rehabilitation Services,Rehabilitation Services,Expense
+60305-01,Medication Services,Medical Services,BH Medical Services,Medical Services,Expense
+60305-05,Medical Management,Medical Services,BH Medical Services,Medical Services,Expense
+60305-10,"Laboratory, Radiology and Medical Imaging",Medical Services,BH Medical Services,Medical Services,Expense
+60305-15,Electro-Convulsive Therapy,Medical Services,BH Medical Services,Medical Services,Expense
+60405-01,Case Management,Support Services,BH Support Services,Support Services,Expense
+60405-05,Personal Care Services,Support Services,BH Support Services,Support Services,Expense
+60405-10,Family Support,Support Services,BH Support Services,Support Services,Expense
+60405-15,Peer Support,Support Services,BH Support Services,Support Services,Expense
+60405-20,Therapeutic Foster Care,Support Services,BH Support Services,Support Services,Expense
+60405-21,Adult Behavioral Health Therapeutic Home,Support Services,BH Support Services,Support Services,Expense
+60405-25,Unskilled Respite Care,Support Services,BH Support Services,Support Services,Expense
+60405-30,Supported Housing*,Support Services,BH Support Services,Support Services,Expense
+60405-35,Reserved for Future Use,Support Services,BH Support Services,Support Services,Expense
+60405-40,Transportation,Support Services,BH Support Services,Support Services,Expense
+60505-01,Crisis Intervention - Mobile,Crisis Intervention Services,BH Crisis Intervention Services,Crisis Intervention Services,Expense
+60505-05,Crisis Intervention - Stabilization,Crisis Intervention Services,BH Crisis Intervention Services,Crisis Intervention Services,Expense
+60505-10,Crisis Intervention - Telephone,Crisis Intervention Services,BH Crisis Intervention Services,Crisis Intervention Services,Expense
+60605-01,Hospital,Inpatient Services,BH Inpatient Services,Inpatient Services,Expense
+60605-01a,"Hospital, Psychiatric",Inpatient Services,BH Inpatient Services,Inpatient Services,Expense
+60605-01b,"Hospital, Detoxification",Inpatient Services,BH Inpatient Services,Inpatient Services,Expense
+60605-05,Sub acute Facility,Inpatient Services,BH Inpatient Services,Inpatient Services,Expense
+60605-05a,"Sub acute Facility, Psychiatric",Inpatient Services,BH Inpatient Services,Inpatient Services,Expense
+60605-05b,"Sub acute Facility, Detoxification",Inpatient Services,BH Inpatient Services,Inpatient Services,Expense
+60605-10,Residential Treatment Center (RTC),Inpatient Services,BH Inpatient Services,Inpatient Services,Expense
+60605-10a,"Residential Treatment Center (RTC), Psychiatric",Inpatient Services,BH Inpatient Services,Inpatient Services,Expense
+60605-10b,"Residential Treatment Center (RTC), Detoxification",Inpatient Services,BH Inpatient Services,Inpatient Services,Expense
+60605-15,"Inpatient Services, Professional",Inpatient Services,BH Inpatient Services,Inpatient Services,Expense
+60705-01,Behavioral Health Residential Facilities,Residential Services,BH Residential Services,Residential Services,Expense
+60705-05,Reserved for Future Use,Residential Services,BH Residential Services,Residential Services,Expense
+60705-10,Room and Board,Residential Services,BH Residential Services,Residential Services,Expense
+60805-01,Supervised Day Program,Behavioral Health Day Program,BH Behavioral Health Day Program,Behavioral Health Day Program,Expense
+60805-05,Therapeutic Day Program,Behavioral Health Day Program,BH Behavioral Health Day Program,Behavioral Health Day Program,Expense
+60805-10,Medical Day Program,Behavioral Health Day Program,BH Behavioral Health Day Program,Behavioral Health Day Program,Expense
+60905-01,Reserved for Future Use,HIV Services,BH Prevention Services,HIV Services,Expense
+60905-05,HIV,HIV Services,BH Prevention Services,HIV Services,Expense
 61005-01,BH Pharmacy Expense,BH Pharmacy Expenses,BH Pharmacy Expenses,BH Pharmacy Expenses,Expense
 61100-01,PPC BH Title XIX,BH Medical Expenses,BH Medical Expenses,BH Medical Expenses,Expense
 61105-01,Other Service Expenses Not Reported Above*,BH Medical Expenses,BH Medical Expenses,BH Medical Expenses,Expense
 61205-01,BH FQHC/RHC Services,BH Medical Expenses,BH Medical Expenses,BH Medical Expenses,Expense
 61305-01,Specialty and Other Grant Expenses*,BH Medical Expenses,BH Medical Expenses,BH Medical Expenses,Expense
-70105-01,Reinsurance,Other Medical Expenses,Other Medical Expenses,Other Medical Expenses,Expense
-70205-02,Third Party Liability,Other Medical Expenses,Other Medical Expenses,Other Medical Expenses,Expense
-70305-01,Claim Overpayment Recoveries,Other Medical Expenses,Other Medical Expenses,Other Medical Expenses,Expense
-70310-05,PH Pharmacy Rebate,Other Medical Expenses,Other Medical Expenses,Other Medical Expenses,Expense
-70310-10,Pharmacy Performance Guarantees,Other Medical Expenses,Other Medical Expenses,Other Medical Expenses,Expense
+70105-01,Reinsurance,Other Medical Expenses,Other Medical Expenses,Net Medical Expenses,Expense
+70205-02,Third Party Liability,Other Medical Expenses,Other Medical Expenses,Net Medical Expenses,Expense
+70305-01,Claim Overpayment Recoveries,Other Medical Expenses,Other Medical Expenses,Net Medical Expenses,Expense
+70310-05,PH Pharmacy Rebate,Other Medical Expenses,Other Medical Expenses,Net Medical Expenses,Expense
+70310-10,Pharmacy Performance Guarantees,Other Medical Expenses,Other Medical Expenses,Net Medical Expenses,Expense
 80105-01,Compensation,Administrative Expenses,Administrative Expenses,Administrative Expenses,Expense
 80205-01,Occupancy,Administrative Expenses,Administrative Expenses,Administrative Expenses,Expense
 80305-01,Depreciation,Administrative Expenses,Administrative Expenses,Administrative Expenses,Expense
