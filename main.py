@@ -33,16 +33,16 @@ def extract_quarter(cell):
 def rbha_sheet_reformat(sheet):
     items = sheet['A']
     item_rows = [item.row for item in items if detect_line_item(item)]
-    subitems = sheet['B']
-    for subitem in subitems:
-        if subitem.value:
-            if len(subitem.value) == 1:
-                item_row = max(row for row in item_rows if row < subitem.row)
-                logger.debug(f'Getting subitem from {subitem.row}. Item from {item_row}')
+    sub_items = sheet['B']
+    for sub_item in sub_items:
+        if sub_item.value:
+            if len(sub_item.value) == 1:
+                item_row = max(row for row in item_rows if row < sub_item.row)
+                logger.debug(f'Getting sub-item from {sub_item.row}. Item from {item_row}')
                 line_item = sheet[f'A{item_row}'].value
-                logger.debug(f'{line_item=}\t{subitem.value=}')
-                result = line_item + subitem.value
-                sheet[f'A{subitem.row}'] = result
+                logger.debug(f'{line_item=}\t{sub_item.value=}')
+                result = line_item + sub_item.value
+                sheet[f'A{sub_item.row}'] = result
     return sheet
 
 
@@ -54,13 +54,14 @@ def extract_revenues_and_expenses(filename, columns, info_row, info_column, name
     wb = op.load_workbook(filename, data_only=True)
 
     data = []
+    name = None
     for sheet_name in sheet_names:
         logging.info(f'{filename=}\t{sheet_name=}')
         try:
             sheet = wb[sheet_name]
-        except KeyError as e:
-            print(e)
-            logging.warning(f'{filename}\t{sheet_name} didn\'t exist')
+        except KeyError as ke:
+            print(ke)
+            logging.warning(f"{filename}\t{sheet_name} didn't exist")
             continue
         if program == 'RBHA':
             sheet = rbha_sheet_reformat(sheet)
@@ -95,6 +96,13 @@ def extract_revenues_and_expenses(filename, columns, info_row, info_column, name
 
 
 def main():
+    options = ['ACC', 'RBHA', 'ALTCS']
+    program = None
+    while program not in options:
+        program = input(f"Please choose a program. Your options are: {', '.join(options)}\n\t")
+    assert program in options
+    with pl.Path(f'Input/formats/{program}.json').open('r') as f:
+        params = json.load(f)
     filenames = sys.argv[1:]
     dfs = [extract_revenues_and_expenses(filename, **params) for filename in filenames]
     now = datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S')
@@ -115,13 +123,6 @@ def main():
 
 
 if __name__ == '__main__':
-    options = ['ACC', 'RBHA', 'ALTCS']
-    program = None
-    while program not in options:
-        program = input(f"Please choose a program. Your options are: {', '.join(options)}\n\t")
-    assert program in options
-    with pl.Path(f'Input/formats/{program}.json').open('r') as f:
-        params = json.load(f)
     try:
         main()
     except Exception as e:
