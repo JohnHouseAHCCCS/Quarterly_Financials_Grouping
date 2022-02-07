@@ -82,16 +82,6 @@ def extract_revenues_and_expenses(filename, columns, info_row, info_column, name
         for j in data_columns:
             for i in data_rows:
                 if (cell := sheet.cell(i, j)).value or cell.value == 0:
-                    line_item = sheet.cell(i, info_column[1]).value
-                    try:
-                        line_category = line_items.loc[line_item][f'Line Category']
-                        line_name = line_items.loc[line_item]['Line Name']
-                        rev_exp_ind = line_items.loc[line_item]['Revenue Expense Indicator']
-                    except KeyError:
-                        line_category = 'Unknown'
-                        line_name = "Unknown"
-                        rev_exp_ind = "Unknown"
-                        logger.warning(f'{filename} contained {line_item} with no reference')
                     data.append(
                         {
                             'Name': name,
@@ -99,13 +89,11 @@ def extract_revenues_and_expenses(filename, columns, info_row, info_column, name
                             'Quarter': quarter,
                             'Sheet': sheet_name,
                             'Column': sheet.cell(info_row, j).value,
-                            'Line Item': line_item,
-                            'Line Category': line_category,
-                            'Line Name': line_name,
-                            'Revenue Expense Indicator': rev_exp_ind,
-                            'Line Lookup': line_item + ' - ' + line_name,
+                            'Line Item': sheet.cell(i, info_column[1]).value,
                         })
-    df = pd.DataFrame.from_records(data, columns=columns)
+    df = pd.DataFrame.from_records(data)
+    df = df.join(line_items, on="Line Item")
+    df['Line Lookup'] = df['Line Item'] + ' - ' + df['Line Name']
     return df, name
 
 
