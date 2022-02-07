@@ -87,13 +87,16 @@ def extract_revenues_and_expenses(filename, info_row, info_column, name_cell, qu
                             'Name': name,
                             'Value': cell.value,
                             'Quarter': quarter,
+                            'FFY': (quarter + datetime.timedelta(days=31)).year,
                             'Sheet': sheet_name,
                             'Column': sheet.cell(info_row, j).value,
                             'Line Item': sheet.cell(i, info_column[1]).value,
                         })
     df = pd.DataFrame.from_records(data)
     df = df.join(line_items, on="Line Item")
+
     df['Line Lookup'] = df['Line Item'] + ' - ' + df['Line Name']
+
     return df, name
 
 
