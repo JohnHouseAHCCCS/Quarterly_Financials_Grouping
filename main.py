@@ -53,7 +53,7 @@ def rbha_sheet_reformat(sheet):
 
 def extract_revenues_and_expenses(filename, columns, info_row, info_column, name_cell, quarter_cell, sheet_names,
                                   first_column, program,
-                                  line_items=pd.read_csv('Line_Items.csv', index_col=0)):
+                                  line_items):
     logger.info(pl.Path(filename).stem)
     wb = op.load_workbook(filename, data_only=True)
 
@@ -84,7 +84,7 @@ def extract_revenues_and_expenses(filename, columns, info_row, info_column, name
                 if (cell := sheet.cell(i, j)).value or cell.value == 0:
                     line_item = sheet.cell(i, info_column[1]).value
                     try:
-                        line_category = line_items.loc[line_item][f'Line Category {program}']
+                        line_category = line_items.loc[line_item][f'Line Category']
                         line_name = line_items.loc[line_item]['Line Name']
                         rev_exp_ind = line_items.loc[line_item]['Revenue Expense Indicator']
                     except KeyError:
@@ -121,13 +121,15 @@ def main():
     handler = logging.FileHandler(output_directory / 'app.log', mode='w')
     logger.addHandler(handler)
     logger.info(f'{output_directory=}')
+
     with pl.Path(f'formats/{program}.json').open('r') as f:
         params = json.load(f)
+    line_items = pd.read_csv(pl.Path("Line_Items") / f'{program}.csv', index_col=0)
     filenames = sys.argv[1:]
     dfs = []
     for filename in filenames:
         try:
-            dfs.append(extract_revenues_and_expenses(filename, **params))
+            dfs.append(extract_revenues_and_expenses(filename, line_items=line_items, **params))
         except Exception as exception:
             logger.exception(filename)
             logger.exception(exception)
