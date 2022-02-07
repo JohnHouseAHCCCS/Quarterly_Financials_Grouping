@@ -7,24 +7,31 @@ import logging
 import pathlib as pl
 from parse import parse
 import json
+import dateutil.parser
 
 logger = logging.getLogger(__name__)
-
+logger.setLevel(logging.INFO)
+logger.addHandler(logging.StreamHandler())
 
 def detect_line_item(cell):
     line_item_regex = "[1-9][0-9]*-[0-9]{2}.?"
     if not cell.value:
         return False
     else:
-        logging.debug(cell.value)
-        logging.debug(re.match(line_item_regex, str(cell.value)))
+        logger.debug(cell.value)
+        logger.debug(re.match(line_item_regex, str(cell.value)))
         return re.match(line_item_regex, str(cell.value))
 
 
 def extract_quarter(value: str):
-    logging.info(value)
-    date = parse("{}{:ta}", value)[1]
-    logging.info(str(date))
+    logger.debug(value)
+    date_string = re.search('[0-9/]{5,}', value)
+    if date_string:
+        date = dateutil.parser.parse(date_string[0], dayfirst=False, yearfirst=False)
+        logger.debug(date)
+        return date
+    date = dateutil.parser.parse(value, dayfirst=False, yearfirst=False, fuzzy=True)
+    logger.debug(date)
     return date
 
 
@@ -47,24 +54,22 @@ def rbha_sheet_reformat(sheet):
 def extract_revenues_and_expenses(filename, columns, info_row, info_column, name_cell, quarter_cell, sheet_names,
                                   first_column, program,
                                   line_items=pd.read_csv('Line_Items.csv', index_col=0)):
-    print(filename)
-    logging.info(filename)
+    logger.info(pl.Path(filename).stem)
     wb = op.load_workbook(filename, data_only=True)
 
     data = []
     name = None
     for sheet_name in sheet_names:
-        logging.info(f'{filename=}\t{sheet_name=}')
+        logger.info(f'\t{sheet_name}')
         try:
             sheet = wb[sheet_name]
         except KeyError as ke:
-            print(ke)
-            logging.warning(f"{filename}\t{sheet_name} didn't exist")
+            logger.warning(f"{filename}\t{sheet_name} didn't exist")
             continue
         if program == 'RBHA':
             sheet = rbha_sheet_reformat(sheet)
         name = sheet[name_cell].value
-        logging.info(f'{name=}')
+        logger.info(f'{name=}')
         quarter = extract_quarter(sheet[quarter_cell].value)
         data_rows = [cell.row for cell in sheet[info_column[0]]
                      if detect_line_item(cell)
@@ -113,8 +118,9 @@ def main():
     now = datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S')
     output_directory = pl.Path(f'Output/{program}/{now}')
     output_directory.mkdir(parents=True)
-    logging.basicConfig(filename=output_directory / 'log.log', filemode='w', level=logging.INFO)
-    logging.info(f'{output_directory=}')
+    handler = logging.FileHandler(output_directory / 'app.log', mode='w')
+    logger.addHandler(handler)
+    logger.info(f'{output_directory=}')
     with pl.Path(f'Input/formats/{program}.json').open('r') as f:
         params = json.load(f)
     filenames = sys.argv[1:]
@@ -126,6 +132,7 @@ def main():
             print(exception)
             logger.exception(filename)
             logger.exception(exception)
+    logging.info("Done processing data")
     total_df = pd.DataFrame(columns=params['columns'])
     names = set([x[1] for x in dfs])
     for name in names:
@@ -133,8 +140,9 @@ def main():
         result = pd.DataFrame(columns=params['columns'])
         for matching_df in matching_dfs:
             result = result.append(matching_df)
-            result.to_excel(output_directory / f'{name}.xlsx', index=False)
-            total_df = total_df.append(result)
+        result = result.drop_duplicates()
+        result.to_excel(output_directory / f'{name}.xlsx', index=False)
+        total_df = total_df.append(result)
     total_df.to_excel(output_directory / 'Total.xlsx',
                       index=False)
 
@@ -143,7 +151,6 @@ if __name__ == '__main__':
     try:
         main()
     except Exception as e:
-        logging.exception(e)
-        print(e)
+        logger.exception(e)
         input()
         raise e
