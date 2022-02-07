@@ -11,18 +11,6 @@
 		"South",
 		"Central"
 	],
-	"columns": [
-		"Name",
-		"Sheet",
-		"Quarter",
-		"Column",
-		"Line Item",
-		"Line Category",
-		"Line Name",
-		"Line Lookup",
-		"Revenue Expense Indicator",
-		"Value"
-	],
 	"first_column": 3,
 	"program": "ACC"
 }

@@ -51,7 +51,7 @@ def rbha_sheet_reformat(sheet):
     return sheet
 
 
-def extract_revenues_and_expenses(filename, columns, info_row, info_column, name_cell, quarter_cell, sheet_names,
+def extract_revenues_and_expenses(filename, info_row, info_column, name_cell, quarter_cell, sheet_names,
                                   first_column, program,
                                   line_items):
     logger.info(pl.Path(filename).stem)
@@ -123,12 +123,12 @@ def main():
             logger.exception(filename)
             logger.exception(exception)
     logging.info("Done processing data")
-
-    total_df = pd.DataFrame(columns=params['columns'])
+    columns = dfs[0][0].columns
+    total_df = pd.DataFrame(columns=columns)
     names = set([x[1] for x in dfs])
     for name in names:
         matching_dfs = [x[0] for x in dfs if x[1] == name]
-        result = pd.DataFrame(columns=params['columns'])
+        result = pd.DataFrame(columns=columns)
         for matching_df in matching_dfs:
             result = result.append(matching_df)
         result = result.drop_duplicates()

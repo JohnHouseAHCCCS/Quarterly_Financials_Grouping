@@ -9,18 +9,6 @@
 	"sheet_names": [
 		"FS-Statement of Activities C-2"
 	],
-	"columns": [
-		"Name",
-		"Sheet",
-		"Quarter",
-		"Column",
-		"Line Item",
-		"Line Category",
-		"Line Name",
-		"Line Lookup",
-		"Revenue Expense Indicator",
-		"Value"
-	],
 	"first_column": 4,
 	"program": "RBHA"
 }
