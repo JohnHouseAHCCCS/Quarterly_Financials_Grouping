@@ -1,0 +1,19 @@
+{
+	"info_row": 9,
+	"info_column": [
+		"A",
+		1
+	],
+	"name_cell": "b5",
+	"quarter_cell": "b6",
+	"sheet_names": [
+		"North 4.09-c",
+		"South 4.09-b",
+		"Central 4.09-a",
+		"North 4.10-c",
+		"South 4.10-b",
+		"Central 4.10-a"
+	],
+	"first_column": 3,
+	"program": "EPD"
+}

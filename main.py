@@ -9,7 +9,7 @@ import json
 import dateutil.parser
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 logger.addHandler(logging.StreamHandler())
 
 
@@ -24,6 +24,8 @@ def detect_line_item(cell):
 
 
 def extract_quarter(value: str):
+    if type(value) is not str:
+        return value
     logger.debug(value)
     date_string = re.search('[0-9/]{5,}', value)
     if date_string:
@@ -33,6 +35,14 @@ def extract_quarter(value: str):
     date = dateutil.parser.parse(value, dayfirst=False, yearfirst=False, fuzzy=True)
     logger.debug(date)
     return date
+
+
+def find_info_row(sheet, start_row, info_col):
+    logger.debug(f'{start_row=}')
+    col = sheet[info_col]
+    rows = [cell.row for cell in col if cell.row >= start_row and cell.value]
+    logger.debug(f'{rows=}')
+    return min(rows)
 
 
 def rbha_sheet_reformat(sheet):
@@ -68,6 +78,8 @@ def extract_revenues_and_expenses(filename, info_row, info_column, name_cell, qu
             continue
         if program == 'RBHA':
             sheet = rbha_sheet_reformat(sheet)
+        if program == 'EPD':
+            info_row = find_info_row(sheet, info_row, info_column[0])
         name = sheet[name_cell].value
         logger.info(f'{name=}')
         quarter = extract_quarter(sheet[quarter_cell].value)
@@ -101,7 +113,7 @@ def extract_revenues_and_expenses(filename, info_row, info_column, name_cell, qu
 
 
 def main():
-    options = ['ACC', 'RBHA', 'ALTCS']
+    options = ['ACC', 'RBHA', 'ALTCS', 'EPD']
     program = None
     while program not in options:
         program = input(f"Please choose a program. Your options are: {', '.join(options)}\n\t")
