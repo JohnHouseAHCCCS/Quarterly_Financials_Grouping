@@ -5,13 +5,13 @@ import pandas as pd
 import datetime
 import logging
 import pathlib as pl
-from parse import parse
 import json
 import dateutil.parser
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 logger.addHandler(logging.StreamHandler())
+
 
 def detect_line_item(cell):
     line_item_regex = "[1-9][0-9]*-[0-9]{2}.?"
@@ -121,7 +121,7 @@ def main():
     handler = logging.FileHandler(output_directory / 'app.log', mode='w')
     logger.addHandler(handler)
     logger.info(f'{output_directory=}')
-    with pl.Path(f'Input/formats/{program}.json').open('r') as f:
+    with pl.Path(f'formats/{program}.json').open('r') as f:
         params = json.load(f)
     filenames = sys.argv[1:]
     dfs = []
@@ -129,7 +129,6 @@ def main():
         try:
             dfs.append(extract_revenues_and_expenses(filename, **params))
         except Exception as exception:
-            print(exception)
             logger.exception(filename)
             logger.exception(exception)
     logging.info("Done processing data")

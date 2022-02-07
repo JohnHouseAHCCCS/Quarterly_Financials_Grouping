@@ -1,0 +1,28 @@
+{
+	"info_row": 4,
+	"info_column": [
+		"A",
+		1
+	],
+	"name_cell": "a2",
+	"quarter_cell": "a3",
+	"sheet_names": [
+		"North",
+		"South",
+		"Central"
+	],
+	"columns": [
+		"Name",
+		"Sheet",
+		"Quarter",
+		"Column",
+		"Line Item",
+		"Line Category",
+		"Line Name",
+		"Line Lookup",
+		"Revenue Expense Indicator",
+		"Value"
+	],
+	"first_column": 3,
+	"program": "ACC"
+}
