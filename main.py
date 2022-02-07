@@ -114,6 +114,7 @@ def main():
         params = json.load(f)
     line_items = pd.read_csv(pl.Path("Line_Items") / f'{program}.csv', index_col=0)
     filenames = sys.argv[1:]
+
     dfs = []
     for filename in filenames:
         try:
@@ -122,6 +123,7 @@ def main():
             logger.exception(filename)
             logger.exception(exception)
     logging.info("Done processing data")
+
     total_df = pd.DataFrame(columns=params['columns'])
     names = set([x[1] for x in dfs])
     for name in names:
@@ -132,6 +134,7 @@ def main():
         result = result.drop_duplicates()
         result.to_excel(output_directory / f'{name}.xlsx', index=False)
         total_df = total_df.append(result)
+    total_df = total_df.drop_duplicates()
     total_df.to_excel(output_directory / 'Total.xlsx',
                       index=False)
 
