@@ -20,6 +20,8 @@ Line Item,Line Name,Line Category ACC,Line Category RBHA,Line Category ALTCS,Rev
 50105-01,Hospital Inpatient,Hospitalization,PH Hospitalization,Acute Care,Expense
 50110-01,Hospital Inpatient -Behavioral Health Services,Hospitalization,PH Hospitalization,Acute Care,Expense
 50115-01,Reserved,Hospitalization,PH Hospitalization,Acute Care,Expense
+50160-05,PH Pharmacy Rebate,Other Medical Expenses,Other Medical Expenses,Other Medical Expenses,Expense
+50160-10,Pharmacy Performance Guarantees,Other Medical Expenses,Other Medical Expenses,Other Medical Expenses,Expense
 50205-01,Primary Care Physician Services,Medical Compensation,PH Medical Compensation,Acute Care,Expense
 50210-01,Behavioral Health Physician Services,Medical Compensation,PH Medical Compensation,Acute Care,Expense
 50215-01,Referral Physician Services,Medical Compensation,PH Medical Compensation,Acute Care,Expense
@@ -29,6 +31,8 @@ Line Item,Line Name,Line Category ACC,Line Category RBHA,Line Category ALTCS,Rev
 50235-01,RESERVED,Medical Compensation,PH Medical Compensation,Acute Care,Expense
 50305-01,Emergency Facility Services,Other Medical Expenses,PH Other Medical Expenses,Acute Care,Expense
 50310-01,PH Pharmacy,Other Medical Expenses,PH Other Medical Expenses,Acute Care,Expense
+50310-05,PH Pharmacy Rebate,Other Medical Expenses,PH Other Medical Expenses,Acute Care,Expense
+50310-10,PH Pharmacy Performance Gaurantees,Other Medical Expenses,PH Other Medical Expenses,Acute Care,Expense
 50315-01,"Laboratory, Radiology and Medical Imaging",Other Medical Expenses,PH Other Medical Expenses,Acute Care,Expense
 50320-01,Outpatient Facility,Other Medical Expenses,PH Other Medical Expenses,Acute Care,Expense
 50320-05,Outpatient Behavioral Health Facility,Other Medical Expenses,PH Other Medical Expenses,Acute Care,Expense
@@ -120,14 +124,17 @@ Line Item,Line Name,Line Category ACC,Line Category RBHA,Line Category ALTCS,Rev
 60805-01,Supervised Day Program,Behavioral Health Day Program,BH Behavioral Health Day Program,Behavioral Health Day Program,Expense
 60805-05,Therapeutic Day Program,Behavioral Health Day Program,BH Behavioral Health Day Program,Behavioral Health Day Program,Expense
 60805-10,Medical Day Program,Behavioral Health Day Program,BH Behavioral Health Day Program,Behavioral Health Day Program,Expense
-60905-01,Reserved for Future Use,HIV Services,BH Prevention Services,HIV Services,Expense
+60905-01,Prevention,HIV Services,BH Prevention Services,HIV Services,Expense
 60905-05,HIV,HIV Services,BH Prevention Services,HIV Services,Expense
 61005-01,BH Pharmacy Expense,BH Pharmacy Expenses,BH Pharmacy Expenses,BH Pharmacy Expenses,Expense
+61005-05,BH Pharmacy Rebates,BH Pharmacy Expenses,BH Pharmacy Expenses,BH Pharmacy Expenses,Expense
+61005-10,BH Pharmacy Performance Guarantees,BH Pharmacy Expenses,BH Pharmacy Expenses,BH Pharmacy Expenses,Expense
 61100-01,PPC BH Title XIX,BH Medical Expenses,BH Medical Expenses,BH Medical Expenses,Expense
 61105-01,Other Service Expenses Not Reported Above*,BH Medical Expenses,BH Medical Expenses,BH Medical Expenses,Expense
 61205-01,BH FQHC/RHC Services,BH Medical Expenses,BH Medical Expenses,BH Medical Expenses,Expense
 61305-01,Specialty and Other Grant Expenses*,BH Medical Expenses,BH Medical Expenses,BH Medical Expenses,Expense
 70105-01,Reinsurance,Other Medical Expenses,Other Medical Expenses,Net Medical Expenses,Expense
+70205-01,Third Party Liability,Other Medical Expenses,Other Medical Expenses,Net Medical Expenses,Expense
 70205-02,Third Party Liability,Other Medical Expenses,Other Medical Expenses,Net Medical Expenses,Expense
 70305-01,Claim Overpayment Recoveries,Other Medical Expenses,Other Medical Expenses,Net Medical Expenses,Expense
 70310-05,PH Pharmacy Rebate,Other Medical Expenses,Other Medical Expenses,Net Medical Expenses,Expense

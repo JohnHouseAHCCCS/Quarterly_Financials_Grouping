@@ -9,11 +9,10 @@ from parse import parse
 import json
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(filename='log.log', filemode='w', level=logging.INFO)
 
 
 def detect_line_item(cell):
-    line_item_regex = "[0-9]*-[0-9]{2}.?"
+    line_item_regex = "[1-9][0-9]*-[0-9]{2}.?"
     if not cell.value:
         return False
     else:
@@ -22,10 +21,9 @@ def detect_line_item(cell):
         return re.match(line_item_regex, str(cell.value))
 
 
-def extract_quarter(cell):
-    assert type(cell.value) is str
-    logging.info(cell.value)
-    date = parse("{}{:ta}", cell.value)[1]
+def extract_quarter(value: str):
+    logging.info(value)
+    date = parse("{}{:ta}", value)[1]
     logging.info(str(date))
     return date
 
@@ -66,7 +64,8 @@ def extract_revenues_and_expenses(filename, columns, info_row, info_column, name
         if program == 'RBHA':
             sheet = rbha_sheet_reformat(sheet)
         name = sheet[name_cell].value
-        quarter = extract_quarter(sheet[quarter_cell])
+        logging.info(f'{name=}')
+        quarter = extract_quarter(sheet[quarter_cell].value)
         data_rows = [cell.row for cell in sheet[info_column[0]]
                      if detect_line_item(cell)
                      ]
@@ -78,6 +77,16 @@ def extract_revenues_and_expenses(filename, columns, info_row, info_column, name
         for j in data_columns:
             for i in data_rows:
                 if (cell := sheet.cell(i, j)).value or cell.value == 0:
+                    line_item = sheet.cell(i, info_column[1]).value
+                    try:
+                        line_category = line_items.loc[line_item][f'Line Category {program}']
+                        line_name = line_items.loc[line_item]['Line Name']
+                        rev_exp_ind = line_items.loc[line_item]['Revenue Expense Indicator']
+                    except KeyError:
+                        line_category = 'Unknown'
+                        line_name = "Unknown"
+                        rev_exp_ind = "Unknown"
+                        logger.warning(f'{filename} contained {line_item} with no reference')
                     data.append(
                         {
                             'Name': name,
@@ -85,11 +94,11 @@ def extract_revenues_and_expenses(filename, columns, info_row, info_column, name
                             'Quarter': quarter,
                             'Sheet': sheet_name,
                             'Column': sheet.cell(info_row, j).value,
-                            'Line Item': (li := sheet.cell(i, info_column[1]).value),
-                            'Line Category': line_items.loc[li][f'Line Category {program}'],
-                            'Line Name': (line_name := line_items.loc[li]['Line Name']),
-                            'Revenue Expense Indicator': line_items.loc[li]['Revenue Expense Indicator'],
-                            'Line Lookup': li + ' - ' + line_name,
+                            'Line Item': line_item,
+                            'Line Category': line_category,
+                            'Line Name': line_name,
+                            'Revenue Expense Indicator': rev_exp_ind,
+                            'Line Lookup': line_item + ' - ' + line_name,
                         })
     df = pd.DataFrame.from_records(data, columns=columns)
     return df, name
@@ -101,14 +110,22 @@ def main():
     while program not in options:
         program = input(f"Please choose a program. Your options are: {', '.join(options)}\n\t")
     assert program in options
-    with pl.Path(f'Input/formats/{program}.json').open('r') as f:
-        params = json.load(f)
-    filenames = sys.argv[1:]
-    dfs = [extract_revenues_and_expenses(filename, **params) for filename in filenames]
     now = datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S')
     output_directory = pl.Path(f'Output/{program}/{now}')
     output_directory.mkdir(parents=True)
+    logging.basicConfig(filename=output_directory / 'log.log', filemode='w', level=logging.INFO)
     logging.info(f'{output_directory=}')
+    with pl.Path(f'Input/formats/{program}.json').open('r') as f:
+        params = json.load(f)
+    filenames = sys.argv[1:]
+    dfs = []
+    for filename in filenames:
+        try:
+            dfs.append(extract_revenues_and_expenses(filename, **params))
+        except Exception as exception:
+            print(exception)
+            logger.exception(filename)
+            logger.exception(exception)
     total_df = pd.DataFrame(columns=params['columns'])
     names = set([x[1] for x in dfs])
     for name in names:
