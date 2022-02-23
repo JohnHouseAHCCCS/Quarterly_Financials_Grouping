@@ -91,7 +91,7 @@ def extract_revenues_and_expenses(filename, info_row, info_column, name_cell, qu
                         if cell.value
                         and cell.column >= first_column
                         and 'total' not in str(cell.value).lower()
-                        and 'ytd' not in str(cell.value).lower() # to handle CHP
+                        and 'ytd' not in str(cell.value).lower()  # to handle CHP
                         ]
         for j in data_columns:
             for i in data_rows:
@@ -153,6 +153,17 @@ def main():
                       index=False)
         total_df = total_df.append(result)
     total_df = total_df.drop_duplicates()
+    if program == "CHP":
+        total_df = total_df.sort_values('Quarter')
+        total_df = total_df.drop_duplicates(
+            subset=[
+                'Name',
+                'Column',
+                'Line Item'
+            ],
+            keep='last',
+            ignore_index=True,
+        )
     total_df.to_csv(output_directory / 'Total.csv',
                     index=False)
 
