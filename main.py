@@ -9,7 +9,7 @@ import json
 import dateutil.parser
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 logger.addHandler(logging.StreamHandler())
 
 
@@ -83,6 +83,7 @@ def extract_revenues_and_expenses(filename, info_row, info_column, name_cell, qu
         name = sheet[name_cell].value
         logger.info(f'{name=}')
         quarter = extract_quarter(sheet[quarter_cell].value)
+        ffy = (quarter + datetime.timedelta(days=31)).year
         data_rows = [cell.row for cell in sheet[info_column[0]]
                      if detect_line_item(cell)
                      ]
@@ -90,6 +91,7 @@ def extract_revenues_and_expenses(filename, info_row, info_column, name_cell, qu
                         if cell.value
                         and cell.column >= first_column
                         and 'total' not in str(cell.value).lower()
+                        and 'ytd' not in str(cell.value).lower() # to handle CHP
                         ]
         for j in data_columns:
             for i in data_rows:
@@ -99,7 +101,7 @@ def extract_revenues_and_expenses(filename, info_row, info_column, name_cell, qu
                             'Name': name,
                             'Value': cell.value,
                             'Quarter': quarter,
-                            'FFY': (quarter + datetime.timedelta(days=31)).year,
+                            'FFY': ffy,
                             'Sheet': sheet_name,
                             'Column': sheet.cell(info_row, j).value,
                             'Line Item': sheet.cell(i, info_column[1]).value,
@@ -113,7 +115,7 @@ def extract_revenues_and_expenses(filename, info_row, info_column, name_cell, qu
 
 
 def main():
-    options = ['ACC', 'RBHA', 'ALTCS', 'EPD']
+    options = ['ACC', 'RBHA', 'ALTCS', 'EPD', 'CHP']
     program = None
     while program not in options:
         program = input(f"Please choose a program. Your options are: {', '.join(options)}\n\t")
@@ -147,11 +149,12 @@ def main():
         for matching_df in matching_dfs:
             result = result.append(matching_df)
         result = result.drop_duplicates()
-        result.to_excel(output_directory / f'{name}.xlsx', index=False)
+        result.to_csv(output_directory / f'{name}.csv',
+                      index=False)
         total_df = total_df.append(result)
     total_df = total_df.drop_duplicates()
-    total_df.to_excel(output_directory / 'Total.xlsx',
-                      index=False)
+    total_df.to_csv(output_directory / 'Total.csv',
+                    index=False)
 
 
 if __name__ == '__main__':
