@@ -110,7 +110,8 @@ def extract_revenues_and_expenses(filename, info_row, info_column, name_cell, qu
     df = df.join(line_items, on="Line Item")
 
     df['Line Lookup'] = df['Line Item'] + ' - ' + df['Line Name']
-
+    is_not_total = df['Line Name'].apply(lambda x: 'total' not in str(x).lower())
+    df = df[is_not_total]
     return df, name
 
 
