@@ -114,7 +114,7 @@ def extract_revenues_and_expenses(filename, info_row, info_column, name_cell, qu
     df['Line Lookup'] = df['Line Item'] + ' - ' + df['Line Name']
     is_not_total = df['Line Name'].apply(lambda x: 'total' not in str(x).lower())
     df = df[is_not_total]
-    return df, name
+    return df, name, filename
 
 
 def main():
@@ -147,10 +147,14 @@ def main():
     total_df = pd.DataFrame(columns=columns)
     names = set([x[1] for x in dfs])
     for name in names:
-        matching_dfs = [x[0] for x in dfs if x[1] == name]
+        matching_dfs = [x for x in dfs if x[1] == name]
         result = pd.DataFrame(columns=columns)
-        for matching_df in matching_dfs:
+        name_directory = output_directory / name
+        name_directory.mkdir()
+        for matching_df, df_name, filename in matching_dfs:
             result = result.append(matching_df)
+            matching_df.to_csv(name_directory / f'{pl.Path(filename).stem}.csv',
+                               index=False)
         result = result.drop_duplicates()
         result.to_csv(output_directory / f'{name}.csv',
                       index=False)
