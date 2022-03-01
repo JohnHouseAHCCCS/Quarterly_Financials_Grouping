@@ -9,7 +9,7 @@ import json
 import dateutil.parser
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 logger.addHandler(logging.StreamHandler())
 
 
@@ -23,7 +23,7 @@ def detect_line_item(cell):
         return re.match(line_item_regex, str(cell.value))
 
 
-def extract_quarter(value: str):
+def extract_quarter(value: str, try_on_regex_fail: bool = True):
     if type(value) is not str:
         return value
     logger.debug(value)
@@ -32,6 +32,8 @@ def extract_quarter(value: str):
         date = dateutil.parser.parse(date_string[0], dayfirst=False, yearfirst=False)
         logger.debug(date)
         return date
+    if not try_on_regex_fail:
+        return None
     date = dateutil.parser.parse(value, dayfirst=False, yearfirst=False, fuzzy=True)
     logger.debug(date)
     return date
@@ -165,6 +167,7 @@ def main():
             keep='last',
             ignore_index=True,
         )
+        total_df['Quarter'] = total_df['Column'].apply(extract_quarter, args=(False,))
     total_df.to_csv(output_directory / 'Total.csv',
                     index=False)
 
