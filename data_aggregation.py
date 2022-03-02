@@ -21,7 +21,15 @@ def main():
     total_df = dfs[0]
     for df in dfs[1:]:
         total_df = total_df.append(df)
-    total_df = total_df.drop_duplicates()
+    columns = total_df.columns
+    try:  # This is to handle CHP files
+        total_df = total_df.sort_values('Source')
+        columns.remove('Source')
+    except KeyError:
+        pass
+    except ValueError:
+        pass
+    total_df = total_df.drop_duplicates(columns)
     total_df.to_csv(output_file, index=False)
 
 
