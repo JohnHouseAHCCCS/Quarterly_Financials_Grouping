@@ -143,37 +143,12 @@ def main():
             logger.exception(filename)
             logger.exception(exception)
     logging.info("Done processing data")
-    columns = dfs[0][0].columns
-    total_df = pd.DataFrame(columns=columns)
-    names = set([x[1] for x in dfs])
-    for name in names:
-        matching_dfs = [x for x in dfs if x[1] == name]
-        result = pd.DataFrame(columns=columns)
-        name_directory = output_directory / name
-        name_directory.mkdir()
-        for matching_df, df_name, filename in matching_dfs:
-            result = result.append(matching_df)
-            matching_df.to_csv(name_directory / f'{pl.Path(filename).stem}.csv',
-                               index=False)
-        result = result.drop_duplicates()
-        result.to_csv(output_directory / f'{name}.csv',
-                      index=False)
-        total_df = total_df.append(result)
-    total_df = total_df.drop_duplicates()
-    if program == "CHP":
-        total_df = total_df.sort_values('Quarter')
-        total_df = total_df.drop_duplicates(
-            subset=[
-                'Name',
-                'Column',
-                'Line Item'
-            ],
-            keep='last',
-            ignore_index=True,
-        )
-        total_df['Quarter'] = total_df['Column'].apply(extract_quarter, args=(False,))
-    total_df.to_csv(output_directory / 'Total.csv',
-                    index=False)
+    for matching_df, df_name, filename in dfs:
+        if program == "CHP":
+            matching_df['Source'] = matching_df['Quarter']
+            matching_df['Quarter'] = matching_df['Column'].apply(extract_quarter, args=(False,))
+        matching_df.to_csv(output_directory / f'{pl.Path(filename).stem}.csv',
+                           index=False)
 
 
 if __name__ == '__main__':
