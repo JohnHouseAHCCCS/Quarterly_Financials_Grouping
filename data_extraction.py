@@ -103,6 +103,7 @@ def extract_revenues_and_expenses(filename, info_row, info_column, name_cell, qu
                             'Name': name,
                             'Value': cell.value,
                             'Quarter': quarter,
+                            'File Name': filename,
                             'FFY': ffy,
                             'Sheet': sheet_name,
                             'Column': sheet.cell(info_row, j).value,
