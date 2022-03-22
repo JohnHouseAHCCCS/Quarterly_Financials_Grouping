@@ -11,6 +11,7 @@ import dateutil.parser
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 logger.addHandler(logging.StreamHandler())
+# handler = logging.FileHandler(output_directory / 'app.log', mode='w')
 
 
 def detect_line_item(cell):
@@ -103,7 +104,7 @@ def extract_revenues_and_expenses(filename, info_row, info_column, name_cell, qu
                             'Name': name,
                             'Value': cell.value,
                             'Quarter': quarter,
-                            'File Name': filename,
+                            'File Name': pl.Path(filename).stem,
                             'FFY': ffy,
                             'Sheet': sheet_name,
                             'Column': sheet.cell(info_row, j).value,
@@ -115,7 +116,7 @@ def extract_revenues_and_expenses(filename, info_row, info_column, name_cell, qu
     df['Line Lookup'] = df['Line Item'] + ' - ' + df['Line Name']
     is_not_total = df['Line Name'].apply(lambda x: 'total' not in str(x).lower())
     df = df[is_not_total]
-    return df, name, filename
+    return df, name, filename, quarter
 
 
 def main():
@@ -144,12 +145,21 @@ def main():
             logger.exception(filename)
             logger.exception(exception)
     logging.info("Done processing data")
-    for matching_df, df_name, filename in dfs:
+    destinations = []
+    for matching_df, df_name, filename, quarter in dfs:
         if program == "CHP":
             matching_df['Source'] = matching_df['Quarter']
             matching_df['Quarter'] = matching_df['Column'].apply(extract_quarter, args=(False,))
-        matching_df.to_csv(output_directory / f'{pl.Path(filename).stem}.csv',
+        quarter_str = quarter.strftime("%Y%m")
+        destination = output_directory / f'{quarter_str} - {df_name[:15]:x<10}.csv'
+        destinations.append(destination)
+        matching_df.to_csv(destination,
                            index=False)
+        logger.info(f'Processed {quarter_str} - {df_name:<75}{pl.Path(filename).stem}')
+    for d in set(destinations):
+        destinations.remove(d)
+    for d in destinations:
+        logger.warning(f"Duplicate found: {d}")
 
 
 if __name__ == '__main__':

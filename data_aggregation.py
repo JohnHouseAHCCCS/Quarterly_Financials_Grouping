@@ -24,7 +24,7 @@ def main():
     columns = total_df.columns
     try:  # This is to handle CHP files
         total_df = total_df.sort_values('Source')
-        columns.remove('Source')
+        total_df.drop('Source', axis=1)
     except KeyError:
         pass
     except ValueError:
