@@ -18,6 +18,8 @@ def detect_line_item(cell):
     line_item_regex = "[1-9][0-9]*-[0-9]{2}.?"
     if not cell.value:
         return False
+    elif cell.value in (999, '00999'):
+        return '00999'
     else:
         logger.debug(cell.value)
         logger.debug(re.match(line_item_regex, str(cell.value)))
