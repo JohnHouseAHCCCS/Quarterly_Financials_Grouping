@@ -66,7 +66,7 @@ def rbha_sheet_reformat(sheet):
 
 def extract_revenues_and_expenses(filename, info_row, info_column, name_cell, quarter_cell, sheet_names,
                                   first_column, program,
-                                  line_items):
+                                  line_items, **kwargs):
     logger.info(pl.Path(filename).stem)
     wb = op.load_workbook(filename, data_only=True)
 
@@ -94,8 +94,10 @@ def extract_revenues_and_expenses(filename, info_row, info_column, name_cell, qu
                         if cell.value
                         and cell.column >= first_column
                         and 'total' not in str(cell.value).lower()
-                        and 'ytd' not in str(cell.value).lower()  # to handle CHP
+                        and 'ytd' not in str(cell.value).lower()  # to handle CHP - doesn't work lmao
                         ]
+        if program == 'CHP':
+            data_columns = data_columns[:kwargs['num_columns']]
         for j in data_columns:
             for i in data_rows:
                 if (cell := sheet.cell(i, j)).value or (value := cell.value) == 0:
