@@ -19,9 +19,11 @@ def detect_line_item(cell):
     if not cell.value:
         return False
     elif cell.value in (999, '00999'):
-        return '00999'
+        logger.debug(f'{cell.value=}')
+        logger.debug('00999-01')
+        return ['00999-01']
     else:
-        logger.debug(cell.value)
+        logger.debug(f'{cell.value=}')
         logger.debug(re.match(line_item_regex, str(cell.value)))
         return re.match(line_item_regex, str(cell.value))
 
@@ -89,8 +91,8 @@ def extract_revenues_and_expenses(filename, info_row, info_column, name_cell, qu
         logger.info(f'{name=}')
         quarter = extract_quarter(sheet[quarter_cell].value)
         ffy = (quarter + datetime.timedelta(days=31)).year
-        data_rows = [cell.row for cell in sheet[info_column[0]]
-                     if detect_line_item(cell)
+        data_rows = [(cell.row, li[0]) for cell in sheet[info_column[0]]
+                     if (li := detect_line_item(cell))
                      ]
         data_columns = [cell.column for cell in sheet[info_row]
                         if cell.value
@@ -101,8 +103,9 @@ def extract_revenues_and_expenses(filename, info_row, info_column, name_cell, qu
         if program == 'CHP':
             data_columns = data_columns[:kwargs['num_columns']]
         for j in data_columns:
-            for i in data_rows:
-                if (cell := sheet.cell(i, j)).value or (value := cell.value) == 0:
+            for i, line_item in data_rows:
+                if (cell := sheet.cell(i, j)).value or cell.value == 0:
+                    value = cell.value
                     if type(value) is str:
                         value = value.strip()
                         if value == '-':
@@ -116,12 +119,11 @@ def extract_revenues_and_expenses(filename, info_row, info_column, name_cell, qu
                             'FFY': ffy,
                             'Sheet': sheet_name,
                             'Column': sheet.cell(info_row, j).value,
-                            'Line Item': sheet.cell(i, info_column[1]).value,
+                            'Line Item': line_item,
                         })
     df = pd.DataFrame.from_records(data)
     df = df.join(line_items, on="Line Item")
-
-    df['Line Lookup'] = df['Line Item'] + ' - ' + df['Line Name']
+    df['Line Lookup'] = df['Line Item'].astype(str) + ' - ' + df['Line Name']
     is_not_total = df['Line Name'].apply(lambda x: 'total' not in str(x).lower())
     df = df[is_not_total]
     return df, name, filename, quarter
