@@ -83,7 +83,7 @@ def extract_revenues_and_expenses(filename, info_row, info_column, name_cell, qu
             sheet = rbha_sheet_reformat(sheet)
         if program == 'EPD':
             info_row = find_info_row(sheet, info_row, info_column[0])
-        name = sheet[name_cell].value
+        name = str(sheet[name_cell].value).strip()
         logger.info(f'{name=}')
         quarter = extract_quarter(sheet[quarter_cell].value)
         ffy = (quarter + datetime.timedelta(days=31)).year
@@ -98,11 +98,15 @@ def extract_revenues_and_expenses(filename, info_row, info_column, name_cell, qu
                         ]
         for j in data_columns:
             for i in data_rows:
-                if (cell := sheet.cell(i, j)).value or cell.value == 0:
+                if (cell := sheet.cell(i, j)).value or (value := cell.value) == 0:
+                    if type(value) is str:
+                        value = value.strip()
+                        if value == '-':
+                            value = 0
                     data.append(
                         {
                             'Name': name,
-                            'Value': cell.value,
+                            'Value': value,
                             'Quarter': quarter,
                             'File Name': pl.Path(filename).stem,
                             'FFY': ffy,
