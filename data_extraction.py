@@ -8,10 +8,25 @@ import pathlib as pl
 import json
 import dateutil.parser
 
+# region Logging
+LOGFOLDER = pl.Path('Logs')
+FILENAME = f'{pl.Path(__file__).stem}.log'
+FORMAT = "%(asctime)s - %(message)s"
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 logger.addHandler(logging.StreamHandler())
-# handler = logging.FileHandler(output_directory / 'app.log', mode='w')
+if not LOGFOLDER.exists():
+    LOGFOLDER.mkdir()
+logfile = LOGFOLDER / FILENAME
+handler = logging.FileHandler(logfile, mode='w')
+formatter = logging.Formatter(FORMAT)
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+
+
+# endregion
+
+# region Methods
 
 
 def detect_line_item(cell):
@@ -98,7 +113,7 @@ def extract_revenues_and_expenses(filename, info_row, info_column, name_cell, qu
                         if cell.value
                         and cell.column >= first_column
                         and 'total' not in str(cell.value).lower()
-                        and 'ytd' not in str(cell.value).lower()  # to handle CHP - doesn't work lmao
+                        and 'ytd' not in str(cell.value).lower()  # to handle CHP - doesn't work
                         ]
         if program == 'CHP':
             data_columns = data_columns[:kwargs['num_columns']]
@@ -129,30 +144,27 @@ def extract_revenues_and_expenses(filename, info_row, info_column, name_cell, qu
     return df, name, filename, quarter
 
 
-def main():
-    options = ['ACC', 'RBHA', 'ALTCS', 'EPD', 'CHP']
-    program = None
-    while program not in options:
-        program = input(f"Please choose a program. Your options are: {', '.join(options)}\n\t")
-    assert program in options
+def run_program(program, filenames):
     now = datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S')
     output_directory = pl.Path(f'Output/{program}/{now}')
     output_directory.mkdir(parents=True)
-    handler = logging.FileHandler(output_directory / 'app.log', mode='w')
-    logger.addHandler(handler)
     logger.info(f'{output_directory=}')
 
     with pl.Path(f'formats/{program}.json').open('r') as f:
         params = json.load(f)
     line_items = pd.read_csv(pl.Path("Line_Items") / f'{program}.csv', index_col=0)
-    filenames = sys.argv[1:]
 
     dfs = []
     for filename in filenames:
+        file = pl.Path(filename)
         try:
-            dfs.append(extract_revenues_and_expenses(filename, line_items=line_items, **params))
+            new_file = pl.Path(f'Input/{program}/{file.name}')
+            file = file.rename(new_file)
+            dfs.append(extract_revenues_and_expenses(file, line_items=line_items, **params))
+        except FileExistsError:
+            logger.warning(f'File Exists: {file}')
         except Exception as exception:
-            logger.exception(filename)
+            logger.exception(file)
             logger.exception(exception)
     logging.info("Done processing data")
     destinations = []
@@ -161,7 +173,7 @@ def main():
             matching_df['Source'] = matching_df['Quarter']
             matching_df['Quarter'] = matching_df['Column'].apply(extract_quarter, args=(False,))
         quarter_str = quarter.strftime("%Y%m")
-        destination = output_directory / f'{quarter_str} - {df_name[:15]:x<10}.csv'
+        destination = output_directory / f'{df_name} - {quarter_str}.csv'
         destinations.append(destination)
         matching_df.to_csv(destination,
                            index=False)
@@ -170,6 +182,16 @@ def main():
         destinations.remove(d)
     for d in destinations:
         logger.warning(f"Duplicate found: {d}")
+
+
+# endregion
+
+
+def main():
+    options = ['ACC', 'RBHA', 'ALTCS', 'EPD', 'CHP']
+    for program in options:
+        input_folder = pl.Path('Input') / program
+        run_program(program, input_folder.iterdir())
 
 
 if __name__ == '__main__':

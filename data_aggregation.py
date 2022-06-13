@@ -4,9 +4,21 @@ import pathlib as pl
 import logging
 import datetime
 
+# region Logging
+LOGFOLDER = pl.Path('Logs')
+FILENAME = f'{pl.Path(__file__).stem}.log'
+FORMAT = "%(asctime)s - %(message)s"
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 logger.addHandler(logging.StreamHandler())
+if not LOGFOLDER.exists():
+    LOGFOLDER.mkdir()
+logfile = LOGFOLDER / FILENAME
+handler = logging.FileHandler(logfile, mode='w')
+formatter = logging.Formatter(FORMAT)
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+# endregion
 
 
 def main():
@@ -17,6 +29,7 @@ def main():
     files = [pl.Path(file) for file in files]
     dfs = []  # type: list[pd.DataFrame]
     for file in files:
+        logger.info(file)
         dfs.append(pd.read_csv(file))
     total_df = dfs[0]
     for df in dfs[1:]:
