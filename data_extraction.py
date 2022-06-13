@@ -1,6 +1,5 @@
 import openpyxl as op
 import re
-import sys
 import pandas as pd
 import datetime
 import logging
@@ -25,6 +24,14 @@ logger.addHandler(handler)
 
 
 # endregion
+
+
+# region Parameters
+with open('programs.json', 'r') as f:
+    programs = json.load(f)
+    programs = [key for key, val in programs.items() if val]
+# endregion
+
 
 # region Methods
 
@@ -145,9 +152,8 @@ def extract_revenues_and_expenses(filename, info_row, info_column, name_cell, qu
 
 
 def run_program(program, filenames):
-    now = datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S')
-    output_directory = pl.Path(f'Output/{program}/{now}')
-    output_directory.mkdir(parents=True)
+    output_directory = pl.Path(f'Output/{program}')
+    output_directory.mkdir(parents=True, exist_ok=True)
     logger.info(f'{output_directory=}')
 
     with pl.Path(f'formats/{program}.json').open('r') as f:
@@ -166,7 +172,7 @@ def run_program(program, filenames):
         except Exception as exception:
             logger.exception(file)
             logger.exception(exception)
-    logging.info("Done processing data")
+    logger.info("Done processing data")
     destinations = []
     for matching_df, df_name, filename, quarter in dfs:
         if program == "CHP":
@@ -188,8 +194,7 @@ def run_program(program, filenames):
 
 
 def main():
-    options = ['ACC', 'RBHA', 'ALTCS', 'EPD', 'CHP']
-    for program in options:
+    for program in programs:
         input_folder = pl.Path('Input') / program
         run_program(program, input_folder.iterdir())
 
