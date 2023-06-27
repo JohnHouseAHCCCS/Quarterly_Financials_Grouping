@@ -1,6 +1,6 @@
 {
-	"ACC": true,
-	"RBHA": true,
+	"ACC": false,
+	"RBHA": false,
 	"EPD": true,
-	"CHP": true
+	"CHP": false
 }

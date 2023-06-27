@@ -7,16 +7,20 @@ import json
 LOGFOLDER = pl.Path('Logs')
 FILENAME = f'{pl.Path(__file__).stem}.log'
 FORMAT = "%(asctime)s - %(message)s"
+FILE_LEVEL = logging.WARNING
+STREAM_LEVEL = logging.DEBUG
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-logger.addHandler(logging.StreamHandler())
+stream_handler = logging.StreamHandler()
+stream_handler.setLevel(STREAM_LEVEL)
+logger.addHandler(stream_handler)
 if not LOGFOLDER.exists():
     LOGFOLDER.mkdir()
 logfile = LOGFOLDER / FILENAME
-handler = logging.FileHandler(logfile, mode='w')
+file_handler = logging.FileHandler(logfile, mode='w')
 formatter = logging.Formatter(FORMAT)
-handler.setFormatter(formatter)
-logger.addHandler(handler)
+file_handler.setFormatter(formatter)
+file_handler.setLevel(FILE_LEVEL)
+logger.addHandler(file_handler)
 # endregion
 
 
